@@ -37,8 +37,8 @@ export const Register = () => {
 	const {
 		register,
 		handleSubmit,
-		watch,
-		formState,
+		// watch,
+		// formState,
 		formState: { errors, isValid },
 	} = useForm({
 		mode: 'all',

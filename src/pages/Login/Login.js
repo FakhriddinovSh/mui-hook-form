@@ -1,7 +1,7 @@
 import {
 	Button,
 	InputAdornment,
-	MenuItem,
+	// MenuItem,
 	Paper,
 	TextField,
 	Typography,
@@ -34,8 +34,8 @@ export const Login = () => {
 	const {
 		register,
 		handleSubmit,
-		watch,
-		formState,
+		// watch,
+		// formState,
 		formState: { errors, isValid },
 	} = useForm({
 		mode: 'all',
