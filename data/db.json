@@ -1,0 +1,55 @@
+{
+  "users": [
+    {
+      "email": "shaxobiddinfaxriddinov4@gmail.com",
+      "password": "$2a$10$90wmB4V0lUEDJG1st6tLZuUCIAK4kFm9IMyb3wt2wmLNguOhGXtOC",
+      "first_name": "Shahobiddin",
+      "last_name": "Faxriddinov",
+      "gender": "male",
+      "id": 1
+    },
+    {
+      "email": "ali@gmail.com",
+      "password": "$2a$10$.icU49Ij3mmf2BzwSmm33.rBhessSzHrc.1NBON579fZscSQIyzVG",
+      "first_name": "Ali",
+      "last_name": "Ali",
+      "gender": "male",
+      "id": 2
+    },
+    {
+      "email": "hh@gmail.com",
+      "password": "$2a$10$1H6J0615GQ8AgRC0gTBy..1vQgA5u6NKOln4fsvcdg8cjuFdQD8cO",
+      "first_name": "head",
+      "last_name": "hunter",
+      "gender": "male",
+      "id": 3
+    },
+    {
+      "email": "aa@gmail.com",
+      "password": "$2a$10$62Q9R9Cl57TSVoztXpyCqes24jr7YbwIbvCN1ZwQ50w5wXWDNkKF.",
+      "first_name": "aa",
+      "last_name": "aa",
+      "gender": "male",
+      "id": 4
+    },
+    {
+      "email": "demo@gmail.com",
+      "password": "$2a$10$Lwqh9XTOvyUocq2Y9fscoOcGBs89cOiKKxy1PtJop8i4pno1ybpmK",
+      "first_name": "q",
+      "last_name": "a",
+      "gender": "male",
+      "id": 5
+    },
+    {
+      "email": "front@gmail.com",
+      "password": "$2a$10$EibMoX4FbjGtwYzHrKIJauH/Q4Klj74sYUrltIC4zRytxkE6I/GgC",
+      "first_name": "Frontend",
+      "last_name": "Bootcamp",
+      "gender": "male",
+      "id": 6
+    }
+  ],
+  "category": [],
+  "products": [],
+  "orders": []
+}
