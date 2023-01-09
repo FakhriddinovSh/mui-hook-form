@@ -1,94 +1,48 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { NavLink } from 'react-router-dom';
-import InboxIcon from '@mui/icons-material/Inbox';
-import MailIcon from '@mui/icons-material/Email';
-import {
-	Divider,
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
-	Paper,
-	SwipeableDrawer,
-} from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Badge, Drawer, Grid, Paper } from '@mui/material';
 import { UserContext } from '../../context/UserContext';
-import { MediaCard } from '../../components/Card/Card';
+import { ClientCard } from '../../components/CardItems/CardItems';
+import axios from 'axios';
+import { useCart } from 'react-use-cart';
+import { Stack } from '@mui/system';
+import { OrderedCard } from '../../components/Ordered/Ordered';
+import { Modal } from '../../components/Modal/Modal';
 
 export const Client = () => {
-	const [state, setState] = React.useState({
-		right: false,
-	});
-	const toggleDrawer = (anchor, open) => (event) => {
-		if (
-			event &&
-			event.type === 'keydown' &&
-			(event.key === 'Tab' || event.key === 'Shift')
-		) {
-			return;
-		}
+	const [products, setProducts] = useState([]);
+	const { isEmpty, totalItems, emptyCart, items, cartTotal } = useCart();
+	const [drawer, setDrawer] = useState(false);
+	const [orderModal, setOrderModal] = useState(false);
+	const { user } = useContext(UserContext);
 
-		setState({ ...state, [anchor]: open });
+	useEffect(() => {
+		axios
+			.get('http://localhost:8080/products')
+			.then((res) => setProducts(res.data))
+			.catch((error) => console.log(error));
+	}, []);
+
+	const handleOrder = () => {
+		axios
+			.post('http://localhost:8080/orders', {
+				user_id: user.id,
+				user_name: user.first_name,
+				user_email: user.email,
+				items: items,
+				totalPrice: cartTotal,
+			})
+			.then((res) => console.log(res))
+			.catch((error) => console.log(error));
 	};
-	const list = (anchor) => (
-		<Box
-			sx={{
-				width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250,
-			}}
-			role="presentation"
-			onClick={toggleDrawer(anchor, false)}
-			onKeyDown={toggleDrawer(anchor, false)}
-		>
-			<List>
-				{['Inbox', 'Starred', 'Send email', 'Drafts'].map(
-					(text, index) => (
-						<ListItem key={text} disablePadding>
-							<ListItemButton>
-								<ListItemIcon>
-									{index % 2 === 0 ? (
-										<InboxIcon />
-									) : (
-										<MailIcon />
-									)}
-								</ListItemIcon>
-								<ListItemText primary={text} />
-							</ListItemButton>
-						</ListItem>
-					),
-				)}
-			</List>
-			<Divider />
-			<List>
-				{['All mail', 'Trash', 'Spam'].map((text, index) => (
-					<ListItem key={text} disablePadding>
-						<ListItemButton>
-							<ListItemIcon>
-								{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-							</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
-		</Box>
-	);
-	const { user } = React.useContext(UserContext);
 
-	console.log();
 	return (
 		<>
 			<Paper>
@@ -115,7 +69,7 @@ export const Client = () => {
 							LOGO
 						</Typography>
 						<Box>
-							<IconButton sx={{ p: 0 }}>
+							<IconButton sx={{ marginRight: '5px' }}>
 								<Avatar>
 									{user
 										? user?.first_name?.charAt(0) +
@@ -123,34 +77,75 @@ export const Client = () => {
 										: ''}
 								</Avatar>
 							</IconButton>
-							<IconButton sx={{ p: 2 }}>
-								{['right'].map(() => (
-									<React.Fragment key="right">
-										<Button
-											onClick={toggleDrawer(
-												'right',
-												true,
+
+							<Badge badgeContent={totalItems} color="error">
+								<IconButton
+									sx={{ background: 'red', paddingX: '10px' }}
+									onClick={() => setDrawer(true)}
+								>
+									<ShoppingCartIcon />
+								</IconButton>
+								<Drawer
+									anchor="right"
+									open={drawer}
+									onClose={() => setDrawer(false)}
+									sx={{ width: '300px' }}
+								>
+									<Box
+										sx={{
+											display: 'flex',
+											flexDirection: 'column',
+											padding: '20px',
+											height: '100%',
+										}}
+										width={'400px'}
+									>
+										<Stack sx={{ flexGrow: 1 }}>
+											{isEmpty ? (
+												<Typography>
+													Cart is empty
+												</Typography>
+											) : (
+												''
 											)}
+											<Box>
+												{items.map((item) => (
+													<OrderedCard item={item} />
+												))}
+											</Box>
+										</Stack>
+										<Stack
+											sx={{ marginTop: 'auto' }}
+											spacing={2}
+											direction="row"
 										>
-											<ShoppingCartIcon />
-										</Button>
-										<SwipeableDrawer
-											anchor="right"
-											open={state.right}
-											onClose={toggleDrawer(
-												'right',
-												false,
-											)}
-											onOpen={toggleDrawer('right', true)}
-										>
-											{list('right')}
-										</SwipeableDrawer>
-									</React.Fragment>
-								))}
-							</IconButton>
+											<Button
+												onClick={() => emptyCart()}
+												variant="contained"
+												color="error"
+											>
+												Clear cart
+											</Button>
+											<Button
+												onClick={() =>
+													setOrderModal(true)
+												}
+												variant="contained"
+												color="success"
+											>
+												Order
+											</Button>
+											<Typography>
+												Total: ${cartTotal}
+											</Typography>
+										</Stack>
+									</Box>
+								</Drawer>
+							</Badge>
 							<NavLink
 								style={{
 									textDecoration: 'none',
+									marginLeft: '15px',
 								}}
 								to={'/login'}
 							>
@@ -161,8 +156,41 @@ export const Client = () => {
 				</Container>
 			</Paper>
 			<Container sx={{ paddingTop: '50px' }}>
-				<MediaCard />
+				<Grid container spacing={2}>
+					{products.map((item) => (
+						<Grid item xs={3}>
+							<ClientCard item={item} />
+						</Grid>
+					))}
+				</Grid>
 			</Container>
+
+			<Modal
+				title="Are you sure? "
+				modal={orderModal}
+				setModal={setOrderModal}
+			>
+				<Stack direaction="row" spacing={3}>
+					<Button
+						onClick={() => setOrderModal(false)}
+						variant="outlined"
+						color="error"
+					>
+						No
+					</Button>
+					<Button
+						onClick={() => {
+							handleOrder();
+							setOrderModal(false);
+							emptyCart();
+						}}
+						variant="outlined"
+						color="success"
+					>
+						Yes
+					</Button>
+				</Stack>
+			</Modal>
 		</>
 	);
 };

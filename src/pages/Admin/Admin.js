@@ -13,7 +13,7 @@ import { Order } from '../Order/Order';
 import { Category } from '../Category/Category';
 import { Products } from '../Products/Products';
 
-export const Admin = ({ children }) => {
+export const Admin = () => {
 	const menuItem = [
 		{
 			path: 'order',
@@ -63,7 +63,7 @@ export const Admin = ({ children }) => {
 
 				<div>
 					<Routes>
-						<Route index element={<Order />} />
+						<Route path="order" element={<Order />} />
 						<Route path="category" element={<Category />} />
 						<Route path="products" element={<Products />} />
 					</Routes>
